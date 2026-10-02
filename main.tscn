@@ -1,10 +1,12 @@
 [gd_scene format=4 uid="uid://d1jaadj1xgr2n"]
 
 [ext_resource type="Texture2D" uid="uid://b822yei8k4fii" path="res://art/else/ground.png" id="1_ig7tw"]
-[ext_resource type="Texture2D" uid="uid://bkqmg17wq5ddv" path="res://art/player/player-export.png" id="2_lquwl"]
 [ext_resource type="Texture2D" uid="uid://ctk8y6plmrmec" path="res://art/else/plant.png" id="3_7mycd"]
+[ext_resource type="Script" uid="uid://bkgp83ocrv3oh" path="res://color_change/colorable_sprite.gd" id="4_5vw27"]
 [ext_resource type="Texture2D" uid="uid://c00g7qises46" path="res://art/else/rock.png" id="4_272bh"]
 [ext_resource type="Texture2D" uid="uid://f786ctid8622" path="res://art/else/tree.png" id="5_5vw27"]
+[ext_resource type="PackedScene" uid="uid://ckv74s8mkhqcg" path="res://scenes/player.tscn" id="5_lquwl"]
+[ext_resource type="Script" uid="uid://c72jfj8on1i3d" path="res://color_change/hud.gd" id="7_kek77"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0xm2m"]
 texture = ExtResource("1_ig7tw")
@@ -29,11 +31,6 @@ sources/0 = SubResource("TileSetAtlasSource_0xm2m")
 texture_filter = 1
 tile_map_data = PackedByteArray("AAD/////AAACAAIAAAD//wAAAAACAAIAAAD//wEAAAACAAIAAAAAAP//AAACAAIAAAAAAAAAAAACAAIAAAAAAAEAAAACAAIAAAABAP//AAACAAIAAAABAAAAAAACAAIAAAABAAEAAAACAAIAAAD+/wEAAAACAAIAAAD8//3/AAACAAIAAAD9//3/AAACAAIAAAD+//7/AAACAAIAAAACAAAAAAACAAIAAAACAAEAAAACAAIAAAADAAEAAAACAAIAAAADAAIAAAACAAIAAAD8//7/AAACAAIAAAD8////AAACAAIAAAD8/wAAAAACAAIAAAD8/wEAAAACAAIAAAD8/wIAAAACAAIAAAD8/wMAAAACAAIAAAD9//7/AAACAAIAAAD9////AAACAAIAAAD9/wAAAAACAAIAAAD9/wEAAAACAAIAAAD9/wIAAAACAAIAAAD9/wMAAAACAAIAAAD+//3/AAACAAIAAAD+////AAACAAIAAAD+/wAAAAACAAIAAAD+/wIAAAACAAIAAAD+/wMAAAACAAIAAAD///3/AAACAAIAAAD///7/AAACAAIAAAD//wIAAAACAAIAAAD//wMAAAACAAIAAAAAAP3/AAACAAIAAAAAAP7/AAACAAIAAAAAAAIAAAACAAIAAAAAAAMAAAACAAIAAAABAP3/AAACAAIAAAABAP7/AAACAAIAAAABAAIAAAACAAIAAAABAAMAAAACAAIAAAACAP3/AAACAAIAAAACAP7/AAACAAIAAAACAP//AAACAAIAAAACAAIAAAACAAIAAAACAAMAAAACAAIAAAADAP3/AAACAAIAAAADAP7/AAACAAIAAAADAP//AAACAAIAAAADAAAAAAACAAIAAAADAAMAAAACAAIAAAAEAP3/AAACAAIAAAAEAP7/AAACAAIAAAAEAP//AAACAAIAAAAEAAAAAAACAAIAAAAEAAEAAAACAAIAAAAEAAIAAAACAAIAAAAEAAMAAAACAAIAAAD5//3/AAACAAIAAAD5//7/AAACAAIAAAD5////AAACAAIAAAD5/wAAAAACAAIAAAD5/wEAAAACAAIAAAD5/wIAAAACAAIAAAD5/wMAAAACAAIAAAD6//3/AAACAAIAAAD6//7/AAACAAIAAAD6////AAACAAIAAAD6/wAAAAACAAIAAAD6/wEAAAACAAIAAAD6/wIAAAACAAIAAAD6/wMAAAACAAIAAAD7//3/AAACAAIAAAD7//7/AAACAAIAAAD7////AAACAAIAAAD7/wAAAAACAAIAAAD7/wEAAAACAAIAAAD7/wIAAAACAAIAAAD7/wMAAAACAAIAAAAFAP3/AAACAAIAAAAFAP7/AAACAAIAAAAFAP//AAACAAIAAAAFAAAAAAACAAIAAAAFAAEAAAACAAIAAAAFAAIAAAACAAIAAAAFAAMAAAACAAIAAAAGAP3/AAACAAIAAAAGAP7/AAACAAIAAAAGAP//AAACAAIAAAAGAAAAAAACAAIAAAAGAAEAAAACAAIAAAAGAAIAAAACAAIAAAAGAAMAAAACAAIAAAAHAP3/AAACAAIAAAAHAP7/AAACAAIAAAAHAP//AAACAAIAAAAHAAAAAAACAAIAAAAHAAEAAAACAAIAAAAHAAIAAAACAAIAAAAHAAMAAAACAAIAAAD5//z/AAACAAIAAAD6//z/AAACAAIAAAD7//z/AAACAAIAAAD8//z/AAACAAIAAAD///z/AAACAAIAAAAAAPz/AAACAAIAAAABAPv/AAACAAIAAAACAPr/AAACAAIAAAADAPr/AAACAAIAAAAEAPr/AAACAAIAAAAFAPr/AAACAAIAAAAGAPr/AAACAAIAAAAGAPv/AAACAAIAAAAGAPz/AAACAAIAAAABAPz/AAACAAIAAAACAPz/AAACAAIAAAACAPv/AAACAAIAAAADAPv/AAACAAIAAAAEAPv/AAACAAIAAAAFAPv/AAACAAIAAAAFAPz/AAACAAIAAAAEAPz/AAACAAIAAAADAPz/AAACAAIAAAD9//z/AAACAAIAAAD+//z/AAACAAIAAAAHAPz/AAACAAIAAAAIAP3/AAACAAIAAAAHAPv/AAACAAIAAAAAAPv/AAACAAIAAAD///v/AAACAAIAAAD+//v/AAACAAIAAAD9//v/AAACAAIAAAD8//v/AAACAAIAAAD7//v/AAACAAIAAAD6//v/AAACAAIAAAD5//v/AAACAAIAAAD5//r/AAACAAIAAAD6//r/AAACAAIAAAD7//r/AAACAAIAAAD8//r/AAACAAIAAAD9//r/AAACAAIAAAD+//r/AAACAAIAAAD///r/AAACAAIAAAAAAPr/AAACAAIAAAABAPr/AAACAAIAAAAHAPr/AAACAAIAAAA=")
 tile_set = SubResource("TileSet_vkqoe")
-
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=843319]
-texture_filter = 1
-position = Vector2(-13, 28)
-texture = ExtResource("2_lquwl")
 
 [node name="Sprite2D2" type="Sprite2D" parent="." unique_id=302727615]
 texture_filter = 1
@@ -65,42 +62,65 @@ texture_filter = 1
 position = Vector2(27, -43)
 texture = ExtResource("3_7mycd")
 
-[node name="rock" type="Sprite2D" parent="." unique_id=1570849320]
+[node name="rock" type="Sprite2D" parent="." unique_id=1570849320 groups=["colorable"]]
 texture_filter = 1
 position = Vector2(28, -11)
 texture = ExtResource("4_272bh")
+script = ExtResource("4_5vw27")
 
-[node name="rock2" type="Sprite2D" parent="." unique_id=1501181945]
+[node name="rock2" type="Sprite2D" parent="." unique_id=1501181945 groups=["colorable"]]
 texture_filter = 1
 position = Vector2(-8, -35)
 texture = ExtResource("4_272bh")
+script = ExtResource("4_5vw27")
 
-[node name="rock3" type="Sprite2D" parent="." unique_id=1137467717]
+[node name="rock3" type="Sprite2D" parent="." unique_id=1137467717 groups=["colorable"]]
 texture_filter = 1
 position = Vector2(-34, 45)
 texture = ExtResource("4_272bh")
+script = ExtResource("4_5vw27")
 
-[node name="rock4" type="Sprite2D" parent="." unique_id=1506721740]
+[node name="rock4" type="Sprite2D" parent="." unique_id=1506721740 groups=["colorable"]]
 texture_filter = 1
 position = Vector2(-72, -49)
 texture = ExtResource("4_272bh")
+script = ExtResource("4_5vw27")
 
-[node name="tree" type="Sprite2D" parent="." unique_id=52398653]
+[node name="tree" type="Sprite2D" parent="." unique_id=52398653 groups=["colorable"]]
 texture_filter = 1
 position = Vector2(-68, -26)
 texture = ExtResource("5_5vw27")
+script = ExtResource("4_5vw27")
 
-[node name="tree2" type="Sprite2D" parent="." unique_id=1496909877]
+[node name="tree2" type="Sprite2D" parent="." unique_id=1496909877 groups=["colorable"]]
 texture_filter = 1
 position = Vector2(44, -50)
 texture = ExtResource("5_5vw27")
+script = ExtResource("4_5vw27")
 
-[node name="tree3" type="Sprite2D" parent="." unique_id=970418027]
+[node name="tree3" type="Sprite2D" parent="." unique_id=970418027 groups=["colorable"]]
 texture_filter = 1
 position = Vector2(-6, 10)
 texture = ExtResource("5_5vw27")
+script = ExtResource("4_5vw27")
 
-[node name="tree4" type="Sprite2D" parent="." unique_id=1347543615]
+[node name="tree4" type="Sprite2D" parent="." unique_id=1347543615 groups=["colorable"]]
 texture_filter = 1
 position = Vector2(-39, -76)
 texture = ExtResource("5_5vw27")
+script = ExtResource("4_5vw27")
+
+[node name="Player" parent="." unique_id=2123202084 groups=["player"] instance=ExtResource("5_lquwl")]
+
+[node name="Camera" type="Camera2D" parent="Player" unique_id=1020546962]
+zoom = Vector2(4, 4)
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1213313800]
+script = ExtResource("7_kek77")
+
+[node name="ColorLabel" type="Label" parent="HUD" unique_id=475737284]
+offset_left = 12.0
+offset_top = 8.0
+offset_right = 13.0
+offset_bottom = 31.0
+theme_override_font_sizes/font_size = 20

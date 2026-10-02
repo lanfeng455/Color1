@@ -1,6 +1,9 @@
 class_name Player
 extends CharacterBody2D
 
+## 变色玩法：换色时发出，供 HUD 更新显示。
+signal color_changed(new_color: Color, color_name: String)
+
 ## 角色控制器：2D 场景下的 2.5D 俯视（3/4）角色。
 ## 白盒阶段只做移动、朝向和动画状态机，不包含碰撞玩法逻辑。
 
@@ -26,10 +29,12 @@ const STATE_NAMES: Array[String] = ["idle", "walk", "run", "jump", "rotate"]
 @export_range(0.05, 2.0, 0.05) var rotate_duration := 0.5
 
 @export_group("Visual")
-@export_range(1.0, 8.0, 0.5) var pixel_scale := 4.0
+@export_range(1.0, 8.0, 0.5) var pixel_scale := 1.0
 @export var animation_frames: SpriteFrames
 
 const FOOTPRINT_RADIUS := 4.0
+const INTERACT_RANGE := 48.0
+const INTERACT_FACING_MIN_DOT := 0.5
 
 ## 8 方向（屏幕坐标，y 向下），顺时针：下、左下、左、左上、上、右上、右、右下。
 const DIRS: Array[Vector2] = [
@@ -55,6 +60,8 @@ const DIR_FLIP: Array[bool] = [false, true, true, true, false, false, false, fal
 
 var state: int = State.IDLE
 var facing: int = 0
+var selected_color := Color(0.25, 0.85, 0.35)
+var selected_color_name := "绿"
 
 var _jump_t := 1.0
 var _rotate_t := 0.0
@@ -74,9 +81,12 @@ func _ready() -> void:
 	sprite.sprite_frames = animation_frames if animation_frames != null else _build_sprite_frames()
 	sprite.offset = _base_sprite_offset
 	_apply_animation()
+	color_changed.emit(selected_color, selected_color_name)
 
 
 func _physics_process(delta: float) -> void:
+	_handle_color_input()
+
 	var input := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	var running := Input.is_action_pressed("run")
 
@@ -166,6 +176,47 @@ func _dir_from_input(v: Vector2) -> int:
 	return best
 
 
+func _handle_color_input() -> void:
+	if Input.is_action_just_pressed("select_green"):
+		_select_color(Color(0.25, 0.85, 0.35), "绿")
+	elif Input.is_action_just_pressed("select_blue"):
+		_select_color(Color(0.3, 0.55, 1.0), "蓝")
+	elif Input.is_action_just_pressed("select_red"):
+		_select_color(Color(1.0, 0.3, 0.3), "红")
+	if Input.is_action_just_pressed("interact"):
+		_interact()
+
+
+func _select_color(c: Color, color_name: String) -> void:
+	selected_color = c
+	selected_color_name = color_name
+	color_changed.emit(c, color_name)
+
+
+func _interact() -> void:
+	var target := _facing_colorable()
+	if target:
+		target.apply_color(selected_color)
+
+
+## 只取正前方（约 ±60° 内）且最近的那个 colorable 物体。
+func _facing_colorable() -> ColorableSprite:
+	var facing_vec := DIRS[facing]
+	var best: ColorableSprite = null
+	var best_d := INF
+	for obj: ColorableSprite in get_tree().get_nodes_in_group("colorable"):
+		var delta: Vector2 = obj.global_position - global_position
+		var dist := delta.length()
+		if dist > INTERACT_RANGE or dist < 0.001:
+			continue
+		if (delta / dist).dot(facing_vec) < INTERACT_FACING_MIN_DOT:
+			continue
+		if dist < best_d:
+			best_d = dist
+			best = obj
+	return best
+
+
 func _build_sprite_frames() -> SpriteFrames:
 	var sf := SpriteFrames.new()
 
@@ -207,7 +258,11 @@ func _register_input_actions() -> void:
 	_add_action("move_down", [KEY_S, KEY_DOWN])
 	_add_action("run", [KEY_SHIFT])
 	_add_action("jump", [KEY_SPACE])
-	_add_action("rotate", [KEY_E])
+	_add_action("rotate", [KEY_R])
+	_add_action("select_green", [KEY_1])
+	_add_action("select_blue", [KEY_2])
+	_add_action("select_red", [KEY_3])
+	_add_action("interact", [KEY_E])
 
 
 func _add_action(action: String, keys: Array) -> void:
