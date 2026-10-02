@@ -26,7 +26,7 @@ const STATE_NAMES: Array[String] = ["idle", "walk", "run", "jump", "rotate"]
 @export_range(0.05, 2.0, 0.05) var rotate_duration := 0.5
 
 @export_group("Visual")
-@export_range(1.0, 8.0, 0.5) var pixel_scale := 4.0
+@export_range(1.0, 8.0, 0.5) var pixel_scale := 1.0
 @export var animation_frames: SpriteFrames
 
 const FOOTPRINT_RADIUS := 4.0
