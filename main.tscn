@@ -57,8 +57,6 @@ tile_set = SubResource("TileSet_co6qv")
 
 [node name="Player" parent="." unique_id=2123202084 groups=["player"] instance=ExtResource("5_lquwl")]
 interact_range = 27.0
-outline_width = 1.0
-outline_color = Color(0.011764706, 0.011764706, 0, 1)
 
 [node name="Camera" type="Camera2D" parent="Player" unique_id=1020546962]
 zoom = Vector2(4, 4)

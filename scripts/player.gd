@@ -34,8 +34,7 @@ const STATE_NAMES: Array[String] = ["idle", "walk", "run", "jump", "rotate"]
 
 @export_group("Interact")
 @export_range(8.0, 256.0, 1.0) var interact_range := 48.0
-@export_range(1.0, 8.0, 0.5) var outline_width := 2.0
-@export var outline_color := Color(1.0, 0.95, 0.4)
+@export_range(0.2, 2.0, 0.1) var outline_width := 0.6
 
 const FOOTPRINT_RADIUS := 4.0
 const OUTLINE_SHADER := preload("res://shaders/outline.gdshader")
@@ -92,7 +91,7 @@ func _ready() -> void:
 	_outline_material = ShaderMaterial.new()
 	_outline_material.shader = OUTLINE_SHADER
 	_outline_material.set_shader_parameter("outline_width", outline_width)
-	_outline_material.set_shader_parameter("outline_color", outline_color)
+	_outline_material.set_shader_parameter("outline_color", selected_color)
 
 
 func _physics_process(delta: float) -> void:
@@ -202,13 +201,16 @@ func _handle_color_input() -> void:
 func _select_color(c: Color, color_name: String) -> void:
 	selected_color = c
 	selected_color_name = color_name
+	# 描边跟随玩家当前选择的颜色。
+	if _outline_material != null:
+		_outline_material.set_shader_parameter("outline_color", c)
 	color_changed.emit(c, color_name)
 
 
 func _interact() -> void:
 	var target := _nearest_colorable()
 	if target != null:
-		target.call("apply_color", selected_color)
+		target.call("apply_color", selected_color, global_position)
 
 
 ## 取圆形范围内（interact_range）最近、且能上色（有 apply_color）的物体。
@@ -248,8 +250,8 @@ func _add_outline(target: Node) -> void:
 	_highlight_outline = Sprite2D.new()
 	_highlight_outline.texture = sprite.texture
 	_highlight_outline.centered = sprite.centered
+	_highlight_outline.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_highlight_outline.material = _outline_material
-	_highlight_outline.show_behind_parent = true
 	sprite.add_child(_highlight_outline)
 
 
