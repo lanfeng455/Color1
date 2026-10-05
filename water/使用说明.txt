@@ -15,16 +15,16 @@
   1. 打开目标场景，选中 TileMap（或 TileMapLayer）节点。
   2. 在右侧 Inspector 里找到 CanvasItem -> Material 属性。
   3. 点 Material 右边的下拉箭头 -> Load -> 选择对应材质：
-       - 彩色版：res://water/water_material.tres
-       - 黑白版：res://water/water_bw_material.tres
-     （也可以直接把 .tres 从「文件系统」面板拖到 Material 槽上）
+	   - 彩色版：res://water/water_material.tres
+	   - 黑白版：res://water/water_bw_material.tres
+	 （也可以直接把 .tres 从「文件系统」面板拖到 Material 槽上）
 
 方法 B（手动新建材质指向 shader）：
   1. 选中 TileMap 节点。
   2. Inspector -> Material -> 新建「New ShaderMaterial」。
   3. 点开该材质，在 Shader 槽新建「New Shader」-> 选择对应 shader：
-       - 彩色版：res://water/water.gdshader
-       - 黑白版：res://water/water_bw.gdshader
+	   - 彩色版：res://water/water.gdshader
+	   - 黑白版：res://water/water_bw.gdshader
   4. 想复用的话，把材质右键「Save As」存成 .tres。
 
 二、彩色版 vs 黑白版
