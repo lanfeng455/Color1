@@ -1,16 +1,26 @@
 shader_type canvas_item;
 
-// 2.5D 俯视角水体 —— 黑白版水波着色器
-// 与 water.gdshader 同款波纹，只输出灰度（黑 -> 白）。
+// 2.5D 俯视角水体 —— 黑白写实版
+// 与 water.gdshader 同款高度场 + 法线光照，只输出灰度（黑 -> 白）。
 
 uniform float dark_level : hint_range(0.0, 1.0) = 0.05;
 uniform float light_level : hint_range(0.0, 1.0) = 0.95;
+uniform float foam_level : hint_range(0.0, 1.0) = 0.9;
 
-uniform float wave_speed : hint_range(0.0, 2.0) = 0.45;
+// 指向太阳的方向（单位向量，顶视图近似 z>0）
+uniform vec3 sun_dir = vec3(0.5, 0.5, 0.7071);
+
+uniform float wave_speed : hint_range(0.0, 2.0) = 0.30;
 uniform float wave_strength : hint_range(0.0, 0.6) = 0.24;
 uniform float large_wave_scale : hint_range(1.0, 300.0) = 96.0;
 uniform float small_ripple_scale : hint_range(1.0, 300.0) = 24.0;
+
+// 斜视角地面压扁：<1 时把 Y 向波纹压缩成椭圆，贴合 2.5D 地面（约 0.55）
 uniform float ground_flatten : hint_range(0.2, 1.0) = 0.55;
+
+uniform float foam_amount : hint_range(0.0, 1.0) = 0.28;
+uniform float specular_strength : hint_range(0.0, 3.0) = 0.9;
+uniform float specular_power : hint_range(4.0, 256.0) = 80.0;
 
 varying vec2 world_pos;
 
@@ -31,44 +41,99 @@ float vnoise(vec2 p) {
 	return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
 }
 
+// 分形值噪声：逐层旋转 + 放大，避免轴向对齐的网格感，结果约 [0,1]
+float fbm(vec2 p) {
+	float v = 0.0;
+	float a = 0.5;
+	mat2 rot = mat2(vec2(0.80, 0.60), vec2(-0.60, 0.80));
+	for (int i = 0; i < 5; i++) {
+		v += a * vnoise(p);
+		p = rot * (p * 2.03) + vec2(11.31, 7.17);
+		a *= 0.5;
+	}
+	return v;
+}
+
+// Bayer 8x8 有序抖动矩阵（0..63）。有序抖动比白噪声更均匀，
+// 用更小的幅度就能把 8-bit 量化出的「分层」色带打散。
+const float BAYER8[64] = float[64](
+	0.0, 32.0, 8.0, 40.0, 2.0, 34.0, 10.0, 42.0,
+	48.0, 16.0, 56.0, 24.0, 50.0, 18.0, 58.0, 26.0,
+	12.0, 44.0, 4.0, 36.0, 14.0, 46.0, 6.0, 38.0,
+	60.0, 28.0, 52.0, 20.0, 62.0, 30.0, 54.0, 22.0,
+	3.0, 35.0, 11.0, 43.0, 1.0, 33.0, 9.0, 41.0,
+	51.0, 19.0, 59.0, 27.0, 49.0, 17.0, 57.0, 25.0,
+	15.0, 47.0, 7.0, 39.0, 13.0, 45.0, 5.0, 37.0,
+	63.0, 31.0, 55.0, 23.0, 61.0, 29.0, 53.0, 21.0
+);
+
+// 高度场（法线求梯度时会多次采样，故抽成函数）
+float height_field(vec2 p, float t) {
+	// 方向性涌浪：沿主导风向传播的大波浪
+	vec2 d1 = normalize(vec2(0.35, 0.94));
+	vec2 d2 = normalize(vec2(0.92, -0.39));
+	vec2 d3 = normalize(vec2(0.10, 0.995));
+	float k = 6.28318 / large_wave_scale;
+	float swell = 0.0;
+	swell += sin(dot(p, d1) * k * 1.10 + t * 1.00);
+	swell += 0.60 * sin(dot(p, d2) * k * 1.90 + t * 0.72);
+	swell += 0.40 * sin(dot(p, d3) * k * 3.10 - t * 1.15);
+	swell /= 1.70;
+
+	// 毛细波纹（各向同性 fBm 细浪）
+	float cap = fbm(p / small_ripple_scale + vec2(t * 0.55, -t * 0.40));
+
+	return swell + (cap - 0.5) * 0.35;
+}
+
 void vertex() {
-	world_pos = VERTEX;
+	// TileMapLayer 按象限分块绘制，VERTEX 在每个象限会重置为局部原点，
+	// 直接用 VERTEX 会造成象限之间出现明显分界线。
+	// MODEL_MATRIX 已包含象限偏移，乘上它得到连续的世界坐标。
+	world_pos = (MODEL_MATRIX * vec4(VERTEX, 0.0, 1.0)).xy;
 }
 
 void fragment() {
 	vec2 p = world_pos;
 	p.y /= ground_flatten;
-
 	float t = TIME * wave_speed;
-	vec2 big = p / large_wave_scale;
-	vec2 small = p / small_ripple_scale;
 
-	float h = 0.0;
-	h += sin(big.x * 6.28318 + t * 1.30 + sin(big.y * 6.28318 + t * 0.50));
-	h += 0.55 * sin(big.y * 6.28318 - t * 1.75);
-	h += 0.40 * sin((big.x + big.y) * 3.14159 + t * 1.05);
-	h += 0.30 * sin((big.x - big.y) * 4.18879 - t * 0.85);
-	h += 0.22 * sin(big.x * 12.56637 + t * 2.10);
-	h /= 2.47;
+	float h = height_field(p, t);
 
-	float r = 0.0;
-	r += 0.5 * sin(small.x * 6.28318 + t * 2.40);
-	r += 0.5 * sin(small.y * 6.28318 - t * 2.90);
-	r += 0.45 * (vnoise(small * 2.0 + vec2(t * 0.50, -t * 0.35)) * 2.0 - 1.0);
-	r /= 1.45;
+	// 法线：对高度场做中心差分。
+	// e 取得较大可把高频毛细波纹平滑掉，让明暗与反光主要随大波浪走。
+	float e = 4.0;
+	float hL = height_field(p + vec2(-e, 0.0), t);
+	float hR = height_field(p + vec2(e, 0.0), t);
+	float hD = height_field(p + vec2(0.0, -e), t);
+	float hU = height_field(p + vec2(0.0, e), t);
+	float nscale = wave_strength * 9.0;
+	vec3 n = normalize(vec3((hL - hR) * nscale, (hD - hU) * nscale, 1.0));
 
-	float field = (h + r * 0.55) * wave_strength;
+	// 高度 -> 灰度映射（波谷深、波峰浅）
+	float height01 = clamp(h * 0.5 + 0.5, 0.0, 1.0);
+	float base = mix(dark_level, light_level, height01);
 
-	// 灰度：把高度场映射到 黑 -> 白
-	float g = mix(dark_level, light_level, field * 0.5 + 0.5);
+	// Blinn-Phong 光照
+	vec3 L = normalize(sun_dir);
+	vec3 V = vec3(0.0, 0.0, 1.0);
+	float NdotL = clamp(dot(n, L), 0.0, 1.0);
+	vec3 H = normalize(L + V);
+	float NdotH = clamp(dot(n, H), 0.0, 1.0);
 
-	// 波峰提亮
-	float crest = smoothstep(0.08, 0.42, field);
-	g = mix(g, light_level, crest * 0.5);
+	float g = base * (0.62 + 0.38 * NdotL);
+	g += foam_level * pow(NdotH, specular_power) * specular_strength * 0.6;
 
-	// 波光闪烁
-	float spark = smoothstep(0.62, 1.0, vnoise(small * 3.0 + vec2(t * 0.80, t * 0.55)));
-	g = mix(g, light_level, spark * 0.18);
+	// 波峰泡沫：高处 + 高频噪声打破，成斑驳泡沫
+	float crest = smoothstep(0.72, 1.0, height01);
+	float foam_noise = fbm(p * 0.16 + vec2(-t * 0.30, t * 0.20));
+	float foam = crest * smoothstep(0.45, 0.85, foam_noise);
+	g = mix(g, foam_level, foam * foam_amount);
+
+	// 8-bit 色带抖动：用 Bayer 8x8 有序抖动把量化误差重新分配，打散「分层」色带。
+	ivec2 bp = ivec2(mod(FRAGCOORD.xy, 8.0));
+	g += (BAYER8[bp.y * 8 + bp.x] / 64.0 - 0.5) * (1.0 / 255.0);
+	g = clamp(g, 0.0, 1.0);
 
 	COLOR = vec4(vec3(g), 1.0);
 }
