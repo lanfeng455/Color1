@@ -98,7 +98,7 @@ theme_override_font_sizes/font_size = 20
 position = Vector2(-77, -69)
 
 [node name="Tree2" parent="." unique_id=1149916635 instance=ExtResource("9_kek77")]
-position = Vector2(-46, -69)
+position = Vector2(-30, 12)
 
 [node name="Tree3" parent="." unique_id=1032288248 instance=ExtResource("9_kek77")]
 position = Vector2(-15, -69)
