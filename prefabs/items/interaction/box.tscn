@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dj86vqolar41r"]
 
-[ext_resource type="Texture2D" uid="uid://h1u7tdvkd65m" path="res://art/things/box.png" id="1_m4mgt"]
+[ext_resource type="Texture2D" uid="uid://h1u7tdvkd65m" path="res://art/things/box.png" id="1_2jq0m"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_box"]
 size = Vector2(16.666649, 16)
@@ -16,4 +16,4 @@ shape = SubResource("RectangleShape2D_box")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=929794733]
 texture_filter = 1
 position = Vector2(8, -5)
-texture = ExtResource("1_m4mgt")
+texture = ExtResource("1_2jq0m")
