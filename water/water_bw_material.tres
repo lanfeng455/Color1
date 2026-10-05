@@ -6,8 +6,13 @@
 shader = ExtResource("1_74s6o")
 shader_parameter/dark_level = 0.05
 shader_parameter/light_level = 0.95
-shader_parameter/wave_speed = 0.45
+shader_parameter/foam_level = 0.9
+shader_parameter/sun_dir = Vector3(0.5, 0.5, 0.7071)
+shader_parameter/wave_speed = 0.3
 shader_parameter/wave_strength = 0.24
 shader_parameter/large_wave_scale = 96.0
 shader_parameter/small_ripple_scale = 24.0
 shader_parameter/ground_flatten = 0.55
+shader_parameter/foam_amount = 0.28
+shader_parameter/specular_strength = 0.9
+shader_parameter/specular_power = 80.0
