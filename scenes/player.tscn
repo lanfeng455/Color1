@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dbe41t3b1o654" path="res://scripts/player.gd" id="1_player"]
 [ext_resource type="SpriteFrames" uid="uid://ovwahcmis1mw" path="res://resources/player_sprite_frames.tres" id="2_frames"]
+[ext_resource type="Script" uid="uid://csm8oq2wnf1sc" path="res://scripts/character_shadow.gd" id="3_qhqgy"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_g2els"]
 radius = 6.0
@@ -10,6 +11,13 @@ height = 16.0
 [node name="Player" type="CharacterBody2D" unique_id=2123202084]
 script = ExtResource("1_player")
 animation_frames = ExtResource("2_frames")
+
+[node name="Shadow" type="Sprite2D" parent="." unique_id=1668871434]
+texture_filter = 1
+position = Vector2(0, 4)
+scale = Vector2(1, 0.45)
+skew = -0.3
+script = ExtResource("3_qhqgy")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="." unique_id=1266022386]
 texture_filter = 1

@@ -5,13 +5,13 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bhunq"]
 shader = ExtResource("1_ffnw6")
-shader_parameter/tilt = 38.27600609311
-shader_parameter/stretch = 0.5870000041325
-shader_parameter/shadow_shift = Vector2(0.135, -0.1)
+shader_parameter/tilt = -17.99999658
+shader_parameter/stretch = 0.5
+shader_parameter/shadow_shift = Vector2(0.01, -0.09)
 shader_parameter/shadow_color = Color(0, 0, 0, 0.4)
-shader_parameter/blur_near = 1.250000059375
+shader_parameter/blur_near = 2.000000095
 shader_parameter/blur_far = 0.50000002375
-shader_parameter/fade_distance = 0.10000000475
+shader_parameter/fade_distance = 0.250000011875
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yddip"]
 size = Vector2(25, 7)
