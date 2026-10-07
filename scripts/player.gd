@@ -122,6 +122,7 @@ func _physics_process(delta: float) -> void:
 		_update_hop_visual()
 		_apply_animation()
 		move_and_slide()
+		_push_boxes(input, delta)
 		return
 
 	if Input.is_action_just_pressed("rotate"):
@@ -144,6 +145,7 @@ func _physics_process(delta: float) -> void:
 	sprite.offset = _base_sprite_offset
 	_apply_animation()
 	move_and_slide()
+	_push_boxes(input, delta)
 
 
 func _start_jump() -> void:
@@ -162,6 +164,22 @@ func _start_rotate() -> void:
 func _update_hop_visual() -> void:
 	var height := sin(_jump_t * PI) * jump_height
 	sprite.offset = Vector2(_base_sprite_offset.x, _base_sprite_offset.y - height)
+
+
+## 推动接触到的可推箱（PushableBody）。
+## 仅当玩家朝箱子方向推（被箱子挡住）时，才沿玩家前进方向推动箱子；
+## 只是贴着箱子滑过去（速度与表面平行）不会推动它。
+func _push_boxes(dir: Vector2, delta: float) -> void:
+	if dir == Vector2.ZERO:
+		return
+	dir = dir.normalized()
+	for i in get_slide_collision_count():
+		var col := get_slide_collision(i)
+		var body := col.get_collider()
+		if body is CharacterBody2D and body.has_method("push"):
+			var into := -col.get_normal()   # 指向箱子内部（被挡住的推入方向）
+			if dir.dot(into) > 0.3:
+				body.push(dir, delta)
 
 
 func _apply_animation() -> void:

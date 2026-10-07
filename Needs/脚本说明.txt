@@ -211,11 +211,12 @@
 12. scripts/pushable_box.gd  （class_name PushableBox，可推箱）
 --------------------------------------------------------------
   功能：
-	可推动的箱子，物理由子节点 RigidBody2D 承载（重力=0、锁定旋转）。
+	可推动的箱子，物理由子节点 CharacterBody2D 承载；玩家真实顶住箱面时
+	由玩家调用 push() 同步推动，箱子只撞世界墙、不主动撞玩家。
 	位置会被保存/恢复。
   使用方法：
 	放 Node2D 挂此脚本，子节点：
-	  - Body（RigidBody2D，内含 CollisionShape2D + Visual）
+	  - Body（CharacterBody2D，内含 CollisionShape2D + Visual）
 	直接放场景即可，玩家碰撞即可推动。
 
 --------------------------------------------------------------

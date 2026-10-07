@@ -1,19 +1,26 @@
 [gd_scene format=3 uid="uid://dj86vqolar41r"]
 
 [ext_resource type="Texture2D" uid="uid://h1u7tdvkd65m" path="res://art/things/box.png" id="1_2jq0m"]
+[ext_resource type="Script" path="res://scripts/pushable_box.gd" id="2_box"]
+[ext_resource type="Script" path="res://scripts/pushable_body.gd" id="3_body"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_box"]
 size = Vector2(16.666649, 16)
 
-[node name="Box" type="StaticBody2D" unique_id=2085654712]
-collision_layer = 4
+[node name="Box" type="Node2D"]
+script = ExtResource("2_box")
 
-[node name="Collision" type="CollisionShape2D" parent="." unique_id=53087762]
+[node name="Body" type="CharacterBody2D" parent="."]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("3_body")
+
+[node name="Collision" type="CollisionShape2D" parent="Body"]
 position = Vector2(-2.3841858e-07, -13)
 scale = Vector2(0.96000105, 1)
 shape = SubResource("RectangleShape2D_box")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=929794733]
+[node name="Sprite2D" type="Sprite2D" parent="Body"]
 texture_filter = 1
 position = Vector2(8, -5)
 texture = ExtResource("1_2jq0m")
