@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bgfnfyk13xrue"]
 
-[ext_resource type="Shader" uid="uid://d1c66tsprtjdc" path="res://prefabs/items/static prop/tree_shadow.gdshader" id="1_ffnw6"]
-[ext_resource type="Texture2D" uid="uid://f786ctid8622" path="res://art/else/tree.png" id="1_uc26x"]
+[ext_resource type="Shader" uid="uid://d1c66tsprtjdc" path="res://shaders/tree_shadow.gdshader" id="1_ffnw6"]
+[ext_resource type="Texture2D" uid="uid://ds5pboakfdd3a" path="res://art/picture_boluo/树1tm.png" id="2_ffnw6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bhunq"]
 shader = ExtResource("1_ffnw6")
@@ -21,8 +21,9 @@ size = Vector2(25, 7)
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=401944506]
 texture_filter = 1
 material = SubResource("ShaderMaterial_bhunq")
-position = Vector2(-1, -32)
-texture = ExtResource("1_uc26x")
+position = Vector2(0, -31)
+scale = Vector2(0.06, 0.065)
+texture = ExtResource("2_ffnw6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2124807367]
 position = Vector2(0, -8)
